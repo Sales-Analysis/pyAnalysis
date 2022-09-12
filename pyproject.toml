@@ -6,6 +6,8 @@ authors = ["pandamy619 <vladislavtagaev@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+pathlib = "^1.0.1"
+pandas = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
