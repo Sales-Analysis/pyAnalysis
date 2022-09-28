@@ -9,10 +9,14 @@ class FileIsEmptyValueError(Exception):
     """there is an empty value"""
 
 
-def read_file(path: str, header: int = None) -> pd.DataFrame:
+def read_file(path: str, header: [int, None] = 0) -> pd.DataFrame:
     excel_data = pd.read_excel(path, header=header)
-    if excel_data.empty:
-        raise FileIsEmptyError("file is empty")
-    if excel_data.isnull().any().any():
-        raise FileIsEmptyValueError("there is an empty value")
     return excel_data
+
+
+def make_exception_tests(path: str):
+    input_data = read_file(path=path)
+    if input_data.empty:
+        raise FileIsEmptyError("file is empty")
+    if input_data.isnull().any().any():
+        raise FileIsEmptyValueError("there is an empty value")
