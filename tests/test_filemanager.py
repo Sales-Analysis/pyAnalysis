@@ -4,7 +4,6 @@ from filemanager import (
     read_file,
     FileIsEmptyError,
     FileIsEmptyValueError,
-    FileNegativeValueError,
     validators,
 )
 
@@ -34,9 +33,3 @@ def test_empty_values_in_file():
     with pytest.raises(FileIsEmptyValueError, match="there is an empty value"):
         validators(data=data)
 
-
-def test_negative_value_in_file():
-    path = "./data/negative_value.xlsx"
-    data = pd.read_excel(path, header=None)
-    with pytest.raises(FileNegativeValueError, match="there is a negative value"):
-        validators(data=data)
