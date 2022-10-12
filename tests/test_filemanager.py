@@ -23,13 +23,13 @@ def test_read_file(data_exel):
 def test_file_is_empty():
     path = "./data/empty_exel.xlsx"
     data = pd.read_excel(path, header=None)
-    with pytest.raises(FileIsEmptyError, match="file is empty"):
+    with pytest.raises(FileIsEmptyError, match="File is empty."):
         validators(data=data)
 
 
 def test_empty_values_in_file():
     path = "./data/empty_value.xlsx"
     data = pd.read_excel(path, header=None)
-    with pytest.raises(FileIsEmptyValueError, match="there is an empty value"):
+    with pytest.raises(FileIsEmptyValueError, match="There is an empty value."):
         validators(data=data)
 

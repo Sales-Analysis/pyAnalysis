@@ -1,13 +1,9 @@
 import pandas as pd
-from typing import List, Optional
-
-
-class FileIsEmptyError(Exception):
-    """File is empty"""
-
-
-class FileIsEmptyValueError(Exception):
-    """there is an empty value"""
+from typing import Optional
+from code_errors import (
+    FileIsEmptyError,
+    FileIsEmptyValueError,
+)
 
 
 def read_file(path: str, header: Optional[int] = 0) -> pd.DataFrame:
@@ -21,6 +17,6 @@ def read_file(path: str, header: Optional[int] = 0) -> pd.DataFrame:
 
 def validators(data: pd.DataFrame) -> None:
     if data.empty:
-        raise FileIsEmptyError("file is empty")
+        raise FileIsEmptyError("File is empty.")
     if data.isnull().any().any():
-        raise FileIsEmptyValueError("there is an empty value")
+        raise FileIsEmptyValueError("There is an empty value.")
