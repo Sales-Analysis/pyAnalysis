@@ -8,7 +8,7 @@ from analysis import (
     NotFoundAnalysisError,
     SumValuesIsNot100Error,
     AccumulatedValuesNotCorrect,
-    CategoryIncorrectError,
+    CategoryIncorrectError, abc,
 )
 
 
@@ -49,9 +49,19 @@ def test_value_in_category():
 
 def test_analysis():
     a = 'ABC'
-    assert analysis(type_analysis=a) == a
+    path = '../tests/data/abc_result.xlsx'
+    df = analysis(path=path, type_analysis=a)
+    return df
+
+
+def test_result_analysis():
+    path = '../tests/data/abc_test.xlsx'
+    data = abc(path)
+    pd.testing.assert_frame_equal(test_analysis(), data.reset_index(drop=True))
 
 
 def test_not_found_analysis():
     with pytest.raises(NotFoundAnalysisError):
         analysis(type_analysis='XXX')
+
+

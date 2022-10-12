@@ -36,23 +36,23 @@ class ABCData(str, Enum):
     # data[ABCData.CODE_PLU]: int
     # data[ABCData.NAME_ANALYSIS_POSITIONS]: str
 
-def analysis(type_analysis: str = 'ABC') -> str:
+def analysis(path: str, type_analysis: str = 'ABC') -> pd.DataFrame:
     if type_analysis not in set(i.value for i in AnalysisModel):
         raise NotFoundAnalysisError
 
     if type_analysis == AnalysisModel.ABC:
-        return 'ABC'
+        return abc(path=path)
 
 
-def abc() -> pd.DataFrame:
+def abc(path: str) -> pd.DataFrame:
     """делает расчет abc анализа"""
-    path = "./tests/data/abc_test.xlsx"
+    # path = "./tests/data/abc_test.xlsx"
     data = read_file(path=path)
     data = data.sort_values(by=[ABCData.DATA_ANALYSIS], ascending=False)
     data = share(data=data)
     data = accumulated_share(data=data)
     data = category(data=data)
-    data = rounding(data=data)
+    data = data.round(2)
     validators(data=data)
     return data
 
@@ -83,12 +83,6 @@ def category(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def rounding(data: pd.DataFrame) -> pd.DataFrame:
-    """округляет все числовые значения во всех колонках с точностью до сотых"""
-    data = data.round(2)
-    return data
-
-
 def validators(data: pd.DataFrame) -> None:
     """проводит валидацию на предмет ошибок"""
     if not data[ABCData.DATA_ANALYSIS].apply(np.isreal).all():
@@ -101,4 +95,3 @@ def validators(data: pd.DataFrame) -> None:
         raise AccumulatedValuesNotCorrect("The accumulated share was calculated incorrectly.")
     if not data[ABCData.CATEGORY].isin([symbol for symbol in "ABC"]).all():
         raise CategoryIncorrectError("There is no such category.")
-
