@@ -54,6 +54,7 @@ def abc(path: str) -> pd.DataFrame:
     data = category(data=data)
     data = data.round(2)
     validators(data=data)
+    data = data.reset_index(drop=True)
     return data
 
 
