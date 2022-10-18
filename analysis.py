@@ -132,11 +132,10 @@ class ABCAnalysis:
 
     @property
     def round(self):
-        arr: List[Union[int, float]] = []
-        arr2: List[Union[int, float]] = []
-        for value_share in self.data[ABCModels.SHARE.value]:
-            arr.append(round(value_share, 2))
-        self.data[ABCModels.SHARE.value] = arr
-        for value_share in self.data[ABCModels.ACCUMULATED_SHARE.value]:
-            arr2.append(round(value_share, 2))
-        self.data[ABCModels.ACCUMULATED_SHARE.value] = arr2
+        self.data[ABCModels.SHARE.value] = [
+            round(i, 2) for i in self.data[ABCModels.SHARE.value]
+        ]
+        self.data[ABCModels.ACCUMULATED_SHARE.value] = [
+            round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
+        ]
+
