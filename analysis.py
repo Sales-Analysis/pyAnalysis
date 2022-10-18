@@ -1,3 +1,4 @@
+import itertools
 from functools import reduce
 
 import pandas as pd
@@ -14,17 +15,17 @@ from validators import validators_abc
 
 
 # class File(BaseModel):
-    # path = "./tests/data/abc_test.xlsx"
-    # data = read_file(path=path)
-    # abc(): pd.DataFrame  #??
-    # data = BaseModel     #??
-    # data: pd.DataFrame
-    # data[ABCData.SHARE]: float
-    # data[ABCData.DATA_ANALYSIS]: [float, int]  # можно так?
-    # data[ABCData.ACCUMULATED_SHARE]: float
-    # data[ABCData.CATEGORY]: str
-    # data[ABCData.CODE_PLU]: int
-    # data[ABCData.NAME_ANALYSIS_POSITIONS]: str
+# path = "./tests/data/abc_test.xlsx"
+# data = read_file(path=path)
+# abc(): pd.DataFrame  #??
+# data = BaseModel     #??
+# data: pd.DataFrame
+# data[ABCData.SHARE]: float
+# data[ABCData.DATA_ANALYSIS]: [float, int]  # можно так?
+# data[ABCData.ACCUMULATED_SHARE]: float
+# data[ABCData.CATEGORY]: str
+# data[ABCData.CODE_PLU]: int
+# data[ABCData.NAME_ANALYSIS_POSITIONS]: str
 
 def analysis(type_analysis: str, path: str) -> pd.DataFrame:
     if type_analysis not in set(i.value for i in AnalysisModel):
@@ -76,6 +77,7 @@ def abc(path: str) -> pd.DataFrame:
 
 class ABCAnalysis:
     """ABC analysis."""
+
     def __init__(self, data: Dict[str, List[Union[int, str, float]]]):
         self.data = data
 
@@ -86,7 +88,7 @@ class ABCAnalysis:
     def sorted(self):
         values: List[Union[int, float]] = self.data[ABCModels.DATA_ANALYSIS].copy()
         values.sort(reverse=True)
-        result = {}
+        result: Dict[str, List[Union[int, str, float]]] = {}
         for key in self.data.keys():
             if key == ABCModels.DATA_ANALYSIS:
                 result[key] = values
@@ -101,22 +103,19 @@ class ABCAnalysis:
     @property
     def share(self):
         """Cчитает долю от анализируемой колонки в %"""
-        sum_analysis_numbers: Union[int, float] = sum(self.data[ABCModels.DATA_ANALYSIS.value])
+        sum_numbers: Union[int, float] = sum(self.data[ABCModels.DATA_ANALYSIS.value])
         arr: List[Union[int, float]] = []
         for analysis_number in self.data[ABCModels.DATA_ANALYSIS.value]:
-            s = analysis_number / sum_analysis_numbers * 100
+            s = analysis_number / sum_numbers * 100
             arr.append(s)
         self.data[ABCModels.SHARE.value] = arr
 
     @property
     def accumulated_share(self):
         """Считает накопленную долю в %"""
-        arr: List[Union[int, float]] = []
-        accum_numbers = 0
-        for number_share in self.data[ABCModels.SHARE.value]:
-            accum_numbers += number_share
-            arr.append(accum_numbers)
-        self.data[ABCModels.ACCUMULATED_SHARE.value] = arr
+        self.data[ABCModels.ACCUMULATED_SHARE.value] = [
+            i for i in itertools.accumulate(self.data[ABCModels.SHARE.value])
+        ]
 
     @property
     def category(self):
