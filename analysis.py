@@ -1,5 +1,7 @@
 import itertools
 from typing import Dict, Union, List
+
+from filemanager import read_exel
 from models import ABCModels
 
 
@@ -66,4 +68,16 @@ class ABCAnalysis:
         self.data[ABCModels.ACCUMULATED_SHARE.value] = [
             round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
         ]
+
+
+def abc_analysis(path: str):
+    data = read_exel(path=path)
+    a = ABCAnalysis(data=data)
+    a.sorted
+    a.share
+    a.accumulated_share
+    a.category
+    a.round
+    result = a.result()
+    return result
 
