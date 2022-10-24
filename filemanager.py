@@ -4,6 +4,7 @@ from typing import Dict, Union, List
 
 
 def read_exel(path: str):
+    """Читает входной exel файл и возвращает в виде словаря"""
     wb = openpyxl.load_workbook(path)
     worksheet = wb.worksheets[0]
     iter_rows = worksheet.iter_rows()
@@ -12,33 +13,19 @@ def read_exel(path: str):
         header: List[str] = [cell.value for cell in next(iter_rows)]
     except StopIteration:
         raise FileIsEmptyError
-    rows: List[Dict[str, List[Union[int, str, float]]]] = read_rows(header=header, rows=iter_rows)
-    if not rows:
+    data: dict[str, list[Union[int, str, float]]] = convert_dict(header=header, rows=iter_rows)
+    if not len([value for values in data.values() for value in values]):
         raise FileIsEmptyError
-    result = convert_dict(header=header, rows=rows)
-    return result
+    return data
 
 
-def convert_dict(header, rows):
+def convert_dict(
+        header: List[str],
+        rows: List[Dict[str, List[Union[int, str, float]]]]
+):
     """Конвертирует в один словарь"""
-    result: dict[str, List[Union[int, str, float]]] = {}
-    for key in header:
-        arr: List[Union[int, str, float]] = []
-        for into_rows in rows:
-            arr.append(into_rows[key])
-        result[key] = arr
-    return result
-
-
-def read_rows(header, rows):
-    result: List[Dict[str, List[Union[int, str, float]]]] = []
+    result: Dict[str, List[Union[int, str, float]]] = {name: [] for name in header}
     for row in rows:
-        result.append(read_cells(header, cells=row))
-    return result
-
-
-def read_cells(header, cells):
-    result: Dict[str, List[Union[int, str, float]]] = {}
-    for j, cell in enumerate(cells):
-        result[header[j]] = cell.value
+        for cell, name in zip(row, header):
+            result[name].append(cell.value)
     return result

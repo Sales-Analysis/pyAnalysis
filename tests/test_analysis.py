@@ -1,5 +1,5 @@
 import pytest
-from analysis import ABCAnalysis
+from analysis import ABCAnalysis, abc_analysis
 from models import ABCModels
 
 
@@ -44,4 +44,10 @@ def test_class_abc(data_input, data_result):
     a.category
     a.round
     result = a.result()
+    assert result == data_result
+
+
+def test_abc_analysis(data_result):
+    path = "../tests/data/abc_test.xlsx"
+    result = abc_analysis(path=path)
     assert result == data_result

@@ -3,7 +3,7 @@ from filemanager import read_exel
 from code_errors import FileIsEmptyError
 
 
-class TestGroup2:
+class TestGroup:
     def test_read_exel(self, data_input):
         path = "./data/abc_test.xlsx"
         reading_file = read_exel(path=path)

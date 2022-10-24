@@ -1,8 +1,9 @@
 import itertools
 from typing import Dict, Union, List
 
+from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
-from models import ABCModels
+from models import ABCModels, AnalysisModel
 
 
 class ABCAnalysis:
@@ -16,6 +17,7 @@ class ABCAnalysis:
 
     @property
     def sorted(self):
+        """Сортирует входные анализируемые данные в порядке убывания."""
         values: List[Union[int, float]] = self.data[ABCModels.DATA_ANALYSIS].copy()
         values.sort(reverse=True)
         result: Dict[str, List[Union[int, str, float]]] = {}
@@ -70,7 +72,17 @@ class ABCAnalysis:
         ]
 
 
+def analysis(type_analysis: str, path: str):
+    """Проверяет на модель анализа"""
+    if type_analysis not in set(i.value for i in AnalysisModel):
+        raise NotFoundAnalysisError
+
+    if type_analysis == AnalysisModel.ABC:
+        return abc_analysis(path=path)
+
+
 def abc_analysis(path: str):
+    """Делает расчет abc анализа"""
     data = read_exel(path=path)
     a = ABCAnalysis(data=data)
     a.sorted
@@ -80,4 +92,3 @@ def abc_analysis(path: str):
     a.round
     result = a.result()
     return result
-
