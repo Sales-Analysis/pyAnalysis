@@ -1,4 +1,5 @@
 import itertools
+from collections import Counter
 from typing import Dict, Union, List
 
 from code_errors import NotFoundAnalysisError
@@ -14,6 +15,42 @@ class ABCAnalysis:
 
     def result(self):
         return self.data
+
+    @property
+    def find_duplicate_values(self):
+        """Обьединяет повторяющиеся знчения одной категории и удаляет повторяющиеся"""
+
+        # plu_duplicates: [{5: [1,2]}]  #ключ: список индексов
+        # for key, values in self.data.items():
+        #     arr = []
+        #     index = 0
+        dupl = {}
+        index = 0
+        index_duplicate = []
+        code_plu_not_duplicate = []
+        plu_duplicates = []
+        code_plu = self.data[ABCModels.CODE_PLU]
+        for i in code_plu:
+            if i not in code_plu_not_duplicate:
+                code_plu_not_duplicate.append(i)
+                index += 1
+            else:
+                dupl[i] = index
+                # plu_duplicates.append(i)
+                index_duplicate.append(index)
+                index += 1
+
+        # for i, v in Counter(self.data[ABCModels.CODE_PLU]).items():
+        #    if v > 1:
+        #        plu_duplicates.append(i)
+
+        # index_duplicate = [self.data[ABCModels.CODE_PLU].index(i) for i in plu_duplicates]
+
+
+
+
+
+
 
     @property
     def sorted(self):
