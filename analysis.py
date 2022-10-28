@@ -1,10 +1,60 @@
 import itertools
-from collections import Counter
-from typing import Dict, Union, List
 
+from typing import Dict, Union, List
 from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
 from models import ABCModels, AnalysisModel
+
+
+def analysis(type_analysis: str, path: str):
+    """Проверяет на модель анализа"""
+
+    if type_analysis not in set(i.value for i in AnalysisModel):
+        raise NotFoundAnalysisError
+
+    data = read_exel(path=path)
+    data = pre_data(data=data)
+    if type_analysis == AnalysisModel.ABC:
+        return abc_analysis(data=data)
+
+
+def pre_data(data: Dict[str, List[Union[int, str, float]]]):
+    result = find_duplicate_values(data=data)
+    return result
+
+
+def find_duplicate_values(
+    data: Dict[str, List[Union[int, str, float]]]
+) -> Dict[str, List[Union[int, str, float]]]:
+    """Обьединяет повторяющиеся знчения одной категории и удаляет повторяющиеся."""
+
+    result = {key: [] for key in data.keys()}
+    for i, v in enumerate(data[ABCModels.CODE_PLU]):
+        name_analysis_position = data[ABCModels.NAME_ANALYSIS_POSITIONS]
+        data_analysis = data[ABCModels.DATA_ANALYSIS]
+        if (v in result[ABCModels.CODE_PLU]) and \
+                (name_analysis_position[i] in result[ABCModels.NAME_ANALYSIS_POSITIONS]) and \
+                (data_analysis[i] in result[ABCModels.DATA_ANALYSIS]):
+            continue
+        result[ABCModels.CODE_PLU].append(v)
+        result[ABCModels.NAME_ANALYSIS_POSITIONS].append(
+            data[ABCModels.NAME_ANALYSIS_POSITIONS][i]
+        )
+        result[ABCModels.DATA_ANALYSIS].append(data[ABCModels.DATA_ANALYSIS][i])
+    return result
+
+
+def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
+    """Делает расчет abc анализа."""
+
+    a = ABCAnalysis(data=data)
+    a.sorted
+    a.share
+    a.accumulated_share
+    a.category
+    a.round
+    result = a.result()
+    return result
 
 
 class ABCAnalysis:
@@ -15,21 +65,6 @@ class ABCAnalysis:
 
     def result(self):
         return self.data
-
-    @property
-    def find_duplicate_values(self):
-        """Обьединяет повторяющиеся знчения одной категории и удаляет повторяющиеся"""
-
-        # plu_duplicates: [{5: [1,2]}]  #ключ: список индексов
-        index_duplicate = []
-        code_plu_not_duplicate = []
-        code_plu = self.data[ABCModels.CODE_PLU]
-        for index, value in enumerate(code_plu):
-            if value not in code_plu_not_duplicate:
-                code_plu_not_duplicate.append(value)
-            else:
-                index_duplicate.append(index)
-
 
     @property
     def sorted(self):
@@ -86,25 +121,3 @@ class ABCAnalysis:
         self.data[ABCModels.ACCUMULATED_SHARE.value] = [
             round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
         ]
-
-
-def analysis(type_analysis: str, path: str):
-    """Проверяет на модель анализа"""
-    if type_analysis not in set(i.value for i in AnalysisModel):
-        raise NotFoundAnalysisError
-
-    if type_analysis == AnalysisModel.ABC:
-        return abc_analysis(path=path)
-
-
-def abc_analysis(path: str):
-    """Делает расчет abc анализа"""
-    data = read_exel(path=path)
-    a = ABCAnalysis(data=data)
-    a.sorted
-    a.share
-    a.accumulated_share
-    a.category
-    a.round
-    result = a.result()
-    return result

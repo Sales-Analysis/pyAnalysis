@@ -1,5 +1,6 @@
 import pytest
-from analysis import ABCAnalysis, abc_analysis
+from analysis import ABCAnalysis, abc_analysis, find_duplicate_values
+from filemanager import read_exel
 from models import ABCModels
 
 
@@ -49,5 +50,12 @@ def test_class_abc(data_input, data_result):
 
 def test_abc_analysis(data_result):
     path = "../tests/data/abc_test.xlsx"
-    result = abc_analysis(path=path)
+    data = read_exel(path=path)
+    result = abc_analysis(data=data)
     assert result == data_result
+
+
+def test_duplicate_value(data_input, data_duplicate_value):
+    result = find_duplicate_values(data=data_duplicate_value)
+    assert result == data_input
+
