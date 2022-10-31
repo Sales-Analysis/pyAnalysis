@@ -1,5 +1,5 @@
 import itertools
-
+from collections import Counter
 from typing import Dict, Union, List
 from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
@@ -24,9 +24,9 @@ def pre_data(data: Dict[str, List[Union[int, str, float]]]):
 
 
 def find_duplicate_values(
-    data: Dict[str, List[Union[int, str, float]]]
+        data: Dict[str, List[Union[int, str, float]]]
 ) -> Dict[str, List[Union[int, str, float]]]:
-    """Обьединяет повторяющиеся знчения одной категории и удаляет повторяющиеся."""
+    """Удаляет повторяющиеся строчки."""
 
     result = {key: [] for key in data.keys()}
     for i, v in enumerate(data[ABCModels.CODE_PLU]):
@@ -41,6 +41,31 @@ def find_duplicate_values(
             data[ABCModels.NAME_ANALYSIS_POSITIONS][i]
         )
         result[ABCModels.DATA_ANALYSIS].append(data[ABCModels.DATA_ANALYSIS][i])
+    return result
+
+
+def join_duplicate(
+        data: Dict[str, List[Union[int, str, float]]]
+) -> Dict[str, List[Union[int, str, float]]]:
+    """Объединяет повторяющиеся имена со значениями"""
+    result = data
+    name_analysis_position = data[ABCModels.NAME_ANALYSIS_POSITIONS]
+    data_analysis = data[ABCModels.DATA_ANALYSIS]
+    count_name_analysis_position = Counter(result[ABCModels.NAME_ANALYSIS_POSITIONS])
+    number_repetitions_name_analysis_position = 0
+    for i, v in enumerate(data[ABCModels.CODE_PLU]):
+        if ((name_analysis_position[i] in count_name_analysis_position) and
+                count_name_analysis_position.get(name_analysis_position[i]) > 1):
+            if number_repetitions_name_analysis_position == 0:
+                number_repetitions_name_analysis_position += 1
+                continue
+            # вычисляет индекс в колонке анализируемых позиций, с которой будем складывать
+            for j, k in enumerate(result[ABCModels.NAME_ANALYSIS_POSITIONS]):
+                if name_analysis_position[i] == k:
+                    summa_repeat = result[ABCModels.DATA_ANALYSIS][j] + data[ABCModels.DATA_ANALYSIS][i]
+                    result[ABCModels.DATA_ANALYSIS].append(summa_repeat)
+                    del result[ABCModels.DATA_ANALYSIS][j]
+                    number_repetitions_name_analysis_position = 0
     return result
 
 

@@ -1,5 +1,5 @@
 import pytest
-from analysis import ABCAnalysis, abc_analysis, find_duplicate_values
+from analysis import ABCAnalysis, abc_analysis, find_duplicate_values, join_duplicate
 from filemanager import read_exel
 from models import ABCModels
 
@@ -59,3 +59,8 @@ def test_duplicate_value(data_input, data_duplicate_value):
     result = find_duplicate_values(data=data_duplicate_value)
     assert result == data_input
 
+
+def test_join_duplicate(data_input, data_duplicate_value):
+    result_data = find_duplicate_values(data=data_duplicate_value)
+    result = join_duplicate(data=result_data)
+    assert result == data_input
