@@ -1,6 +1,6 @@
 import itertools
 from collections import Counter
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Tuple
 from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
 from models import ABCModels, AnalysisModel
@@ -20,28 +20,35 @@ def analysis(type_analysis: str, path: str):
 
 def pre_data(data: Dict[str, List[Union[int, str, float]]]):
     result = find_duplicate_values(data=data)
-    return result
+    return result[0] # TODO работаем только с не дубликатами
 
 
 def find_duplicate_values(
         data: Dict[str, List[Union[int, str, float]]]
-) -> Dict[str, List[Union[int, str, float]]]:
+) -> Tuple[Dict[str, List[Union[int, str, float]]],
+           List[Dict[str, Union[int, str, float]]]]:
     """Удаляет повторяющиеся строчки."""
-
     result = {key: [] for key in data.keys()}
+    duplicates = []
     for i, v in enumerate(data[ABCModels.CODE_PLU]):
         name_analysis_position = data[ABCModels.NAME_ANALYSIS_POSITIONS]
         data_analysis = data[ABCModels.DATA_ANALYSIS]
+        duplicate_rows = {}
         if (v in result[ABCModels.CODE_PLU]) and \
                 (name_analysis_position[i] in result[ABCModels.NAME_ANALYSIS_POSITIONS]) and \
                 (data_analysis[i] in result[ABCModels.DATA_ANALYSIS]):
+            duplicate_rows['number_row'] = i + 2  # TODO: в файле header находится на 1 строчке
+            duplicate_rows[ABCModels.CODE_PLU.value] = data[ABCModels.CODE_PLU][i]
+            duplicate_rows[ABCModels.NAME_ANALYSIS_POSITIONS.value] = name_analysis_position[i]
+            duplicate_rows[ABCModels.DATA_ANALYSIS.value] = data_analysis[i]
+            duplicates.append(duplicate_rows)
             continue
         result[ABCModels.CODE_PLU].append(v)
         result[ABCModels.NAME_ANALYSIS_POSITIONS].append(
             data[ABCModels.NAME_ANALYSIS_POSITIONS][i]
         )
         result[ABCModels.DATA_ANALYSIS].append(data[ABCModels.DATA_ANALYSIS][i])
-    return result
+    return result, duplicates
 
 
 def join_duplicate(
@@ -146,3 +153,4 @@ class ABCAnalysis:
         self.data[ABCModels.ACCUMULATED_SHARE.value] = [
             round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
         ]
+
