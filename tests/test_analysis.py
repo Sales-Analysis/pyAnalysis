@@ -55,6 +55,8 @@ def test_abc_analysis(data_result):
     assert result == data_result
 
 
-def test_duplicate_value(data_input, data_duplicate_value):
-    result = find_duplicate_values(data=data_duplicate_value)
+def test_duplicate_value(data_input, data_duplicate_value, data_duplicates):
+    result, duplicates = find_duplicate_values(data=data_duplicate_value)
     assert result == data_input
+    assert duplicates == data_duplicates
+
