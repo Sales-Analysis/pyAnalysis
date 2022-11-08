@@ -158,7 +158,3 @@ class ABCAnalysis:
         self.data[ABCModels.ACCUMULATED_SHARE.value] = [
             round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
         ]
-
-
-# if __name__ == "__main__":
-#     print(analysis("ABC", "./tests/data/abc_test.xlsx"))
