@@ -13,6 +13,10 @@ def analysis(type_analysis: str, path: str):
         raise NotFoundAnalysisError
 
     data = read_exel(path=path)
+    data = data.dict()
+    data[ABCModels.CODE_PLU.value] = data.pop('CODE_PLU')
+    data[ABCModels.NAME_ANALYSIS_POSITIONS.value] = data.pop('NAME_ANALYSIS_POSITIONS')
+    data[ABCModels.DATA_ANALYSIS.value] = data.pop('DATA_ANALYSIS')
     data = pre_data(data=data)
     if type_analysis == AnalysisModel.ABC:
         return abc_analysis(data=data)
@@ -28,6 +32,7 @@ def find_duplicate_values(
 ) -> Tuple[Dict[str, List[Union[int, str, float]]],
            List[Dict[str, Union[int, str, float]]]]:
     """Удаляет повторяющиеся строчки."""
+
     result = {key: [] for key in data.keys()}
     duplicates = []
     for i, v in enumerate(data[ABCModels.CODE_PLU]):
@@ -154,3 +159,6 @@ class ABCAnalysis:
             round(i, 2) for i in self.data[ABCModels.ACCUMULATED_SHARE.value]
         ]
 
+
+# if __name__ == "__main__":
+#     print(analysis("ABC", "./tests/data/abc_test.xlsx"))
