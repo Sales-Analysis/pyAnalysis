@@ -19,7 +19,15 @@ def analysis(type_analysis: str, path: str):
     data[ABCModels.DATA_ANALYSIS.value] = data.pop('DATA_ANALYSIS')
     data = pre_data(data=data)
     if type_analysis == AnalysisModel.ABC:
-        return abc_analysis(data=data)
+        result = abc_analysis(data=data)
+        result = result.dict()
+        result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
+        result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
+        result[ABCModels.DATA_ANALYSIS.value] = result.pop('DATA_ANALYSIS')
+        result[ABCModels.SHARE.value] = result.pop('SHARE')
+        result[ABCModels.ACCUMULATED_SHARE.value] = result.pop('ACCUMULATED_SHARE')
+        result[ABCModels.CATEGORY.value] = result.pop('CATEGORY')
+        return result
 
 
 def pre_data(data: Dict[str, List[Union[int, str, float]]]):
@@ -91,7 +99,7 @@ def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
     a.category
     a.round
     result = a.result()
-    result = OutputModel(
+    return OutputModel(
         CODE_PLU=result[ABCModels.CODE_PLU],
         NAME_ANALYSIS_POSITIONS=result[ABCModels.NAME_ANALYSIS_POSITIONS],
         DATA_ANALYSIS=result[ABCModels.DATA_ANALYSIS],
@@ -99,14 +107,6 @@ def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
         ACCUMULATED_SHARE=result[ABCModels.ACCUMULATED_SHARE],
         CATEGORY=result[ABCModels.CATEGORY],
     )
-    result = result.dict()
-    result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
-    result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
-    result[ABCModels.DATA_ANALYSIS.value] = result.pop('DATA_ANALYSIS')
-    result[ABCModels.SHARE.value] = result.pop('SHARE')
-    result[ABCModels.ACCUMULATED_SHARE.value] = result.pop('ACCUMULATED_SHARE')
-    result[ABCModels.CATEGORY.value] = result.pop('CATEGORY')
-    return result
 
 
 class ABCAnalysis:
