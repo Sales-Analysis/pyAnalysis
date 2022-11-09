@@ -22,3 +22,11 @@ class InputModel(BaseModel):
     NAME_ANALYSIS_POSITIONS: List[str]
     DATA_ANALYSIS: List[Union[int, float]]
 
+
+class OutputModel(BaseModel):
+    CODE_PLU: List[int]
+    NAME_ANALYSIS_POSITIONS: List[str]
+    DATA_ANALYSIS: List[Union[int, float]]
+    SHARE: List[Union[int, float]]
+    ACCUMULATED_SHARE: List[Union[int, float]]
+    CATEGORY: List[str]

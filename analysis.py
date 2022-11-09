@@ -3,7 +3,7 @@ from collections import Counter
 from typing import Dict, Union, List, Tuple
 from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
-from models import ABCModels, AnalysisModel
+from models import ABCModels, AnalysisModel, OutputModel
 
 
 def analysis(type_analysis: str, path: str):
@@ -91,6 +91,13 @@ def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
     a.category
     a.round
     result = a.result()
+    result = result.dict()
+    result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
+    result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
+    result[ABCModels.DATA_ANALYSIS.value] = result.pop('DATA_ANALYSIS')
+    result[ABCModels.SHARE.value] = result.pop('SHARE')
+    result[ABCModels.ACCUMULATED_SHARE.value] = result.pop('ACCUMULATED_SHARE')
+    result[ABCModels.CATEGORY.value] = result.pop('CATEGORY')
     return result
 
 
@@ -101,7 +108,15 @@ class ABCAnalysis:
         self.data = data
 
     def result(self):
-        return self.data
+        result = OutputModel(
+            CODE_PLU=self.data[ABCModels.CODE_PLU],
+            NAME_ANALYSIS_POSITIONS=self.data[ABCModels.NAME_ANALYSIS_POSITIONS],
+            DATA_ANALYSIS=self.data[ABCModels.DATA_ANALYSIS],
+            SHARE=self.data[ABCModels.SHARE],
+            ACCUMULATED_SHARE=self.data[ABCModels.ACCUMULATED_SHARE],
+            CATEGORY=self.data[ABCModels.CATEGORY],
+        )
+        return result
 
     @property
     def sorted(self):
