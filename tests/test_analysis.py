@@ -51,6 +51,10 @@ def test_class_abc(data_input, data_result):
 def test_abc_analysis(data_result):
     path = "../tests/data/abc_test.xlsx"
     data = read_exel(path=path)
+    data = data.dict()
+    data[ABCModels.CODE_PLU.value] = data.pop('CODE_PLU')
+    data[ABCModels.NAME_ANALYSIS_POSITIONS.value] = data.pop('NAME_ANALYSIS_POSITIONS')
+    data[ABCModels.DATA_ANALYSIS.value] = data.pop('DATA_ANALYSIS')
     result = abc_analysis(data=data)
     assert result == data_result
 
