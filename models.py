@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Union, Dict
+from typing import List, Union
 
 from pydantic import BaseModel
 
@@ -26,7 +26,7 @@ class InputModel(BaseModel):
 class OutputModel(BaseModel):
     CODE_PLU: List[int]
     NAME_ANALYSIS_POSITIONS: List[str]
-    DATA_ANALYSIS: List[Union[int, float]]
-    SHARE: List[Union[int, float]]
-    ACCUMULATED_SHARE: List[Union[int, float]]
+    DATA_ANALYSIS: List[Union[float]]
+    SHARE: List[Union[float]]
+    ACCUMULATED_SHARE: List[Union[float]]
     CATEGORY: List[str]

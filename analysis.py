@@ -91,6 +91,14 @@ def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
     a.category
     a.round
     result = a.result()
+    result = OutputModel(
+        CODE_PLU=result[ABCModels.CODE_PLU],
+        NAME_ANALYSIS_POSITIONS=result[ABCModels.NAME_ANALYSIS_POSITIONS],
+        DATA_ANALYSIS=result[ABCModels.DATA_ANALYSIS],
+        SHARE=result[ABCModels.SHARE],
+        ACCUMULATED_SHARE=result[ABCModels.ACCUMULATED_SHARE],
+        CATEGORY=result[ABCModels.CATEGORY],
+    )
     result = result.dict()
     result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
     result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
@@ -108,15 +116,7 @@ class ABCAnalysis:
         self.data = data
 
     def result(self):
-        result = OutputModel(
-            CODE_PLU=self.data[ABCModels.CODE_PLU],
-            NAME_ANALYSIS_POSITIONS=self.data[ABCModels.NAME_ANALYSIS_POSITIONS],
-            DATA_ANALYSIS=self.data[ABCModels.DATA_ANALYSIS],
-            SHARE=self.data[ABCModels.SHARE],
-            ACCUMULATED_SHARE=self.data[ABCModels.ACCUMULATED_SHARE],
-            CATEGORY=self.data[ABCModels.CATEGORY],
-        )
-        return result
+        return self.data
 
     @property
     def sorted(self):
