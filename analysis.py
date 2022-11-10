@@ -6,7 +6,7 @@ from filemanager import read_exel
 from models import ABCModels, AnalysisModel, OutputModel
 
 
-def analysis(type_analysis: str, path: str):
+def analysis(type_analysis: str, path: str) -> OutputModel:
     """Проверяет на модель анализа"""
 
     if type_analysis not in set(i.value for i in AnalysisModel):
@@ -20,13 +20,6 @@ def analysis(type_analysis: str, path: str):
     data = pre_data(data=data)
     if type_analysis == AnalysisModel.ABC:
         result = abc_analysis(data=data)
-        result = result.dict()
-        result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
-        result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
-        result[ABCModels.DATA_ANALYSIS.value] = result.pop('DATA_ANALYSIS')
-        result[ABCModels.SHARE.value] = result.pop('SHARE')
-        result[ABCModels.ACCUMULATED_SHARE.value] = result.pop('ACCUMULATED_SHARE')
-        result[ABCModels.CATEGORY.value] = result.pop('CATEGORY')
         return result
 
 
@@ -89,7 +82,7 @@ def join_duplicate(
     return result
 
 
-def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
+def abc_analysis(data: Dict[str, List[Union[int, str, float]]]) -> OutputModel:
     """Делает расчет abc анализа."""
 
     a = ABCAnalysis(data=data)
