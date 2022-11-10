@@ -56,6 +56,13 @@ def test_abc_analysis(data_result):
     data[ABCModels.NAME_ANALYSIS_POSITIONS.value] = data.pop('NAME_ANALYSIS_POSITIONS')
     data[ABCModels.DATA_ANALYSIS.value] = data.pop('DATA_ANALYSIS')
     result = abc_analysis(data=data)
+    result = result.dict()
+    result[ABCModels.CODE_PLU.value] = result.pop('CODE_PLU')
+    result[ABCModels.NAME_ANALYSIS_POSITIONS.value] = result.pop('NAME_ANALYSIS_POSITIONS')
+    result[ABCModels.DATA_ANALYSIS.value] = result.pop('DATA_ANALYSIS')
+    result[ABCModels.SHARE.value] = result.pop('SHARE')
+    result[ABCModels.ACCUMULATED_SHARE.value] = result.pop('ACCUMULATED_SHARE')
+    result[ABCModels.CATEGORY.value] = result.pop('CATEGORY')
     assert result == data_result
 
 

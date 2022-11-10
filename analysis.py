@@ -3,10 +3,10 @@ from collections import Counter
 from typing import Dict, Union, List, Tuple
 from code_errors import NotFoundAnalysisError
 from filemanager import read_exel
-from models import ABCModels, AnalysisModel
+from models import ABCModels, AnalysisModel, OutputModel
 
 
-def analysis(type_analysis: str, path: str):
+def analysis(type_analysis: str, path: str) -> OutputModel:
     """Проверяет на модель анализа"""
 
     if type_analysis not in set(i.value for i in AnalysisModel):
@@ -19,7 +19,8 @@ def analysis(type_analysis: str, path: str):
     data[ABCModels.DATA_ANALYSIS.value] = data.pop('DATA_ANALYSIS')
     data = pre_data(data=data)
     if type_analysis == AnalysisModel.ABC:
-        return abc_analysis(data=data)
+        result = abc_analysis(data=data)
+        return result
 
 
 def pre_data(data: Dict[str, List[Union[int, str, float]]]):
@@ -81,7 +82,7 @@ def join_duplicate(
     return result
 
 
-def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
+def abc_analysis(data: Dict[str, List[Union[int, str, float]]]) -> OutputModel:
     """Делает расчет abc анализа."""
 
     a = ABCAnalysis(data=data)
@@ -91,7 +92,14 @@ def abc_analysis(data: Dict[str, List[Union[int, str, float]]]):
     a.category
     a.round
     result = a.result()
-    return result
+    return OutputModel(
+        CODE_PLU=result[ABCModels.CODE_PLU],
+        NAME_ANALYSIS_POSITIONS=result[ABCModels.NAME_ANALYSIS_POSITIONS],
+        DATA_ANALYSIS=result[ABCModels.DATA_ANALYSIS],
+        SHARE=result[ABCModels.SHARE],
+        ACCUMULATED_SHARE=result[ABCModels.ACCUMULATED_SHARE],
+        CATEGORY=result[ABCModels.CATEGORY],
+    )
 
 
 class ABCAnalysis:
