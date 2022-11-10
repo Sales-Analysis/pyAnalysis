@@ -4,3 +4,7 @@ class NotFoundAnalysisError(Exception):
 
 class FileIsEmptyError(Exception):
     """File is empty."""
+
+
+class HeaderNotFoundError(Exception):
+    """File is not header"""

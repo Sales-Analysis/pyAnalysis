@@ -1,6 +1,6 @@
 import pytest
-from filemanager import read_exel
-from code_errors import FileIsEmptyError
+from filemanager import read_exel, read_csv
+from code_errors import FileIsEmptyError, HeaderNotFoundError
 
 
 class TestGroup:
@@ -20,3 +20,20 @@ class TestGroup:
         path = "./data/only_header.xlsx"
         with pytest.raises(FileIsEmptyError):
             read_exel(path=path)
+
+
+class TestCsv:
+    def test_reading_csv(self, data_input_csv):
+        path = "./data/abc_test.csv"
+        reading_file = read_csv(path=path)
+        assert data_input_csv == reading_file
+
+    def test_file_is_empty(self):
+        path = "./data/empty_csv.csv"
+        with pytest.raises(HeaderNotFoundError):
+            read_csv(path=path)
+
+    def test_empty_row(self, data_input_csv):
+        path = "./data/data_input_empty_rows.csv"
+        reading_file = read_csv(path=path)
+        assert data_input_csv == reading_file
