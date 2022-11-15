@@ -40,8 +40,8 @@ def convert_dict(
 
 
 def read_csv(path: str) -> Dict[str, List[Union[int, str, float]]]:
-    result = []
-    header = []
+    result: List[List[Union[float, int, str]]] = []
+    header: List[str] = []
     with open(path, encoding='UTF-8') as f:
         reader = csv.reader(f, delimiter=';')
         for index, row in enumerate(reader):
