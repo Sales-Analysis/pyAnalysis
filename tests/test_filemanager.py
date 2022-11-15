@@ -37,3 +37,8 @@ class TestCsv:
         path = "./data/data_input_empty_rows.csv"
         reading_file = read_csv(path=path)
         assert data_input_csv == reading_file
+
+    def test_file_value_is_empty(self):
+        path = "./data/only_header_csv.csv"
+        with pytest.raises(FileIsEmptyError):
+            read_csv(path=path)

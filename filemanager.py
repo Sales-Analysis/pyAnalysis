@@ -1,5 +1,6 @@
 import csv
 import openpyxl
+
 from code_errors import FileIsEmptyError, HeaderNotFoundError
 from typing import Dict, Union, List
 from models import InputModel, ABCModels
@@ -52,9 +53,12 @@ def read_csv(path: str) -> Dict[str, List[Union[int, str, float]]]:
                 continue
             else:
                 result.append(row)
-
+    if not result:
+        raise FileIsEmptyError
     data = {i: [] for i in header}
     for i, v in enumerate(result):
         for j, k in enumerate(v):
             data[header[j]].append(k)
     return data
+
+
