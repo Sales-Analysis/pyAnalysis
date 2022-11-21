@@ -1,5 +1,7 @@
+import csv
 import openpyxl
-from code_errors import FileIsEmptyError
+
+from code_errors import FileIsEmptyError, HeaderNotFoundError
 from typing import Dict, Union, List
 from models import InputModel, ABCModels
 
@@ -35,3 +37,28 @@ def convert_dict(
         for cell, name in zip(row, header):
             result[name].append(cell.value)
     return result
+
+
+def read_csv(path: str) -> Dict[str, List[Union[int, str, float]]]:
+    result: List[List[Union[float, int, str]]] = []
+    header: List[str] = []
+    with open(path, encoding='UTF-8') as f:
+        reader = csv.reader(f, delimiter=';')
+        for index, row in enumerate(reader):
+            if index == 0:
+                if not row:
+                    raise HeaderNotFoundError
+                header = row
+            elif not row:
+                continue
+            else:
+                result.append(row)
+    if not result:
+        raise FileIsEmptyError
+    data = {i: [] for i in header}
+    for i, v in enumerate(result):
+        for j, k in enumerate(v):
+            data[header[j]].append(k)
+    return data
+
+

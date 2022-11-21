@@ -70,4 +70,3 @@ def test_duplicate_value(data_input, data_duplicate_value, data_duplicates):
     result, duplicates = find_duplicate_values(data=data_duplicate_value)
     assert result == data_input
     assert duplicates == data_duplicates
-
